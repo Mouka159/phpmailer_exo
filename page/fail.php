@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>succes-form</title>
+    <title>fail-form</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body{
-            padding: 0;
             margin: 0;
+            padding: 0;
         }
         form{
         display:flex;
@@ -30,19 +31,27 @@
       cursor: pointer;
     }
     button:hover{
-        background: #5bf088;  
+        background: #90e4aa;  
     }
     h2{
         text-align:center;
 
     }
+    i{
+        font-size: 50px;
+        text-align: center;
+    }
+    a{
+        text-decoration: none;
+        color: white;
+    }
     </style>
 </head>
 <body>
-    <form action="">
-
-    <h2> Félicitations, inscription effectuer avec succes </h2>
-   <button><a href="conexion.php"></a>se connecter</button> 
+    <form action="../page/inscri.php" method="POST">
+    <i class="fa-solid fa-xmark" style="color:red;"></i>
+    <h2> Erreur , votre compte n'est pas creer </h2>
+    <button><a href="inscri.php">s' inscrire</a></button>
     </form>
 </body>
 </html>

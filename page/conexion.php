@@ -1,21 +1,6 @@
 <?php
-$servername="localhost";
-$username="root";
-$password="";
-$dbname="mailer";
-if (isset($_POST["login"])){
-    $nom=$_POST['nom'];
-    $email=$_POST['email'];
-    $mdp=$_POST['password'];
-    $req=" INSERT INTO `mailer`(`nom`,`email`,`mdp`) VALUES ($nom,$email,$mdp)";
-    $con=mysqli_connect("localhost","root","","mailer");
-    mysqli_connect($con,$req);
-    echo "utilisateur ajouté avec succes";
-
-}
-
+  require('../config/db.php');
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,11 +52,11 @@ if (isset($_POST["login"])){
     </style>
 </head>
 <body>
-    <form action="POST">
+    <form action="../logique/connexion.php" method="POST">
         <h2>connexion</h2>
-        <input type="text" name="nom" id="nom" placeholder="nom">
-        <input type="email" name="email" id="email" placeholder="email">
-        <input type="password" name="password" id="password" placeholder="password">
+        <input type="text" name="nom" id="nom" placeholder="Nom" require>
+        <input type="email" name="email" id="email" placeholder="email" require>
+        <input type="password" name="password" id="pwd" placeholder="password" require>
         <button name="login">CONNECTER</button>
     </form>
 </body>

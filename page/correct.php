@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fail-form</title>
+    <title>succes-form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
     <style>
         body{
-            margin: 0;
             padding: 0;
+            margin: 0;
         }
         form{
         display:flex;
@@ -30,19 +32,28 @@
       cursor: pointer;
     }
     button:hover{
-        background: #90e4aa;  
+        background: #5bf088;  
     }
     h2{
         text-align:center;
 
     }
+    i{
+        font-size: 50px;
+        text-align: center;
+    }
+    a{
+        text-decoration:none;
+        color:white;
+    }
     </style>
 </head>
 <body>
-    <form action="">
-
-    <h2> Erreur , votre compte n'est pas creer </h2>
-    <button><a href="inscri.php">s' inscrire</a></button>
+    <form action="../page/verify.php" method="POST">
+       <i class="fa-solid fa-check" style="color:green;"></i>
+    <h2> Félicitations, inscription effectuer avec succes <br>
+    veuillez maintenant confirmer l incription</h2>
+   <button><a href="../page/verify.php">confirmer</a></button> 
     </form>
 </body>
 </html>

@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +21,7 @@
         box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
         border-radius: 8px;
         padding: 20px;
-        margin-top: 10%;
+       
     }
     input{
         margin: 10px 0;
@@ -46,21 +49,18 @@
         text-align:center;
 
     }
-
-
     </style>
 </head>
 <body>
-    <form method="post" action="sendcode.php">
-        <h2>inscription</h2>
-        <input type="text" name="name" placeholder="Nom" required><br>
-        <input type="text" name="prenom" id="prenom" placeholder="Prénom" required><br>
-        <input type="tel" name="telephone" id="telephone" placeholder="Téléphone" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Mot de passe" required><br>
-    <button type="submit" name="register">S'INSCRIRE</button>
+    <form action="../logique/inscri.php" method="POST">
+    <input type="text" name="nom" placeholder="Nom" required><br>
+    <input type="text" name="prenom" placeholder="Prénom" required><br>
+    <input type="tel" name="numero"  pattern="^\+?[0-9]{8}$" placeholder="Téléphone" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="mdp" placeholder="Mot de passe" required><br>
+    <button type="submit" name="register">S'inscrire</button>
 </form>
 
-
+</form>
 </body>
-</html>
+</html> 
