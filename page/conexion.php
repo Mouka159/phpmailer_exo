@@ -1,63 +1,153 @@
 <?php
-  require('../config/db.php');
+session_start();
+require('../config/db.php');
+
+// Redirection si déjà connecté
+if (isset($_SESSION['user_id'])) {
+    header('Location: affiche.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>connexion-form</title>
+    <title>Connexion - Ecommerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-    body{
-    margin: 0;
-    padding: 0;
-    }
-    form{
-        display:flex;
-        flex-direction: column;
-        width: 400px;
-        margin: 20px auto;
-        box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-        border-radius: 8px;
-        padding: 20px;
-        margin-top: 10%;
-    }
-    input{
-        margin: 10px 0;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        position: relative;
-        width: 75%;
-        margin-left: 35px;
-    }
-    button{
-      width: 75%;
-      margin-left: 50px;
-      padding: 10px;
-      background: #29b954;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover{
-        background: #6bef93;  
-    }
-    h2{
-        text-align:center;
-
-    }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        form {
+            padding: 40px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+            color: #667eea;
+        }
     </style>
 </head>
 <body>
-    <form action="../logique/connexion.php" method="POST">
-        <h2>connexion</h2>
-        <input type="text" name="nom" id="nom" placeholder="Nom" require>
-        <input type="email" name="email" id="email" placeholder="email" require>
-        <input type="password" name="password" id="pwd" placeholder="password" require>
-        <button name="login">CONNECTER</button>
-    </form>
+    <div class="container">
+        <div class="header">
+            <h2>🔐 Connexion</h2>
+            <p>Accédez à votre compte</p>
+        </div>
+        
+        <form action="../logique/connexion.php" method="POST">
+            <div class="form-group">
+                <label for="nom"><i class="fas fa-user icon"></i>Nom *</label>
+                <input type="text" id="nom" name="nom" placeholder="Entrez votre nom" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope icon"></i>Email *</label>
+                <input type="email" id="email" name="email" placeholder="Entrez votre email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock icon"></i>Mot de Passe *</label>
+                <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
+            </div>
+
+            <button type="submit" name="login">✓ Se Connecter</button>
+
+            <p class="signup-link">
+                Vous n'avez pas de compte? <a href="inscri.php">S'inscrire</a>
+            </p>
+        </form>
+    </div>
 </body>
 </html>
