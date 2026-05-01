@@ -67,4 +67,21 @@ function getCartTotal(PDO $pdo): float
     $row = $stmt->fetch();
     return (float) $row['total_price'];
 }
+
+function clearCart(PDO $pdo, int $userId): bool
+{
+    try {
+        // Récupérer l'ID du panier de l'utilisateur
+        $cartId = getCartId($pdo);
+
+        // Supprimer tous les produits du panier
+        $stmt = $pdo->prepare('DELETE FROM Panier_Produits WHERE panier_id = :panier_id');
+        $stmt->execute([':panier_id' => $cartId]);
+
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 ?>

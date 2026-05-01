@@ -4,7 +4,13 @@ require('../config/db.php');
 
 // Redirection si déjà connecté
 if (isset($_SESSION['user_id'])) {
-    header('Location: affiche.php');
+    // Rediriger selon le rôle
+    $role = $_SESSION['role'] ?? 'user';
+    if ($role === 'admin') {
+        header('Location: admin.php');
+    } else {
+        header('Location: affiche.php');
+    }
     exit();
 }
 ?>
@@ -117,15 +123,57 @@ if (isset($_SESSION['user_id'])) {
             margin-right: 8px;
             color: #667eea;
         }
+        span{
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        span a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f00;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0f0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <?php
+        // Afficher le message si présent
+        if(isset($_GET['message'])){
+            echo "<div class='error-message'><i class='fas fa-exclamation-circle'></i> ".$_GET['message']."</div>";
+        }
+        ?>
         <div class="header">
             <h2>🔐 Connexion</h2>
             <p>Accédez à votre compte</p>
         </div>
-        
+    
         <form action="../logique/connexion.php" method="POST">
             <div class="form-group">
                 <label for="nom"><i class="fas fa-user icon"></i>Nom *</label>
@@ -142,11 +190,9 @@ if (isset($_SESSION['user_id'])) {
                 <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
             </div>
 
-            <button type="submit" name="login">✓ Se Connecter</button>
+            <button type="submit" name="login"> Se Connecter</button>
+            <span>vous n'avez pas de compte? <a href="inscri.php">Inscrivez-vous</a></span>
 
-            <p class="signup-link">
-                Vous n'avez pas de compte? <a href="inscri.php">S'inscrire</a>
-            </p>
         </form>
     </div>
 </body>

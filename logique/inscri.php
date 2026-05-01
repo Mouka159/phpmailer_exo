@@ -14,15 +14,65 @@ if (isset($_POST['register'])) {
     $prenom    = trim($_POST['prenom']);
     $telephone = trim($_POST['numero']);
     $email     = trim($_POST['email']);
-    $password  = password_hash ($_POST['mdp'], PASSWORD_BCRYPT);
+    $mdp_plain = trim($_POST['mdp']); // Garder le mot de passe non hashé pour vérification
+    $adminCode = trim($_POST['admin_code'] ?? '');
+    $password  = password_hash($mdp_plain, PASSWORD_BCRYPT);
+    
+    // Déterminer le rôle
+    $role = 'user';
+    if ($adminCode !== '') {
+        if ($adminCode === 'ADMIN2026') {
+            $role = 'admin';
+        } else {
+            header("Location: ../page/inscri.php?error=".urlencode("❌ Code administrateur invalide"));
+            exit();
+        }
+    }
 
-    // Générer OTP et expiration (2minutes)
+    // Vérifier l'unicité du NOM
+    $checkNom = $pdo->prepare("SELECT COUNT(*) as count FROM utilisateur WHERE nom = :nom");
+    $checkNom->execute([':nom' => $nom]);
+    $nomExists = $checkNom->fetch()['count'] > 0;
+
+    // Vérifier l'unicité de l'EMAIL
+    $checkEmail = $pdo->prepare("SELECT COUNT(*) as count FROM utilisateur WHERE email = :email");
+    $checkEmail->execute([':email' => $email]);
+    $emailExists = $checkEmail->fetch()['count'] > 0;
+
+    // Vérifier l'unicité du MOT DE PASSE (hasher les mots de passe existants et comparer)
+    $checkMdp = $pdo->prepare("SELECT mdp FROM utilisateur");
+    $checkMdp->execute();
+    $mdpExists = false;
+    while ($row = $checkMdp->fetch()) {
+        if (password_verify($mdp_plain, $row['mdp'])) {
+            $mdpExists = true;
+            break;
+        }
+    }
+
+    // Vérifier les erreurs
+    if ($nomExists) {
+        header("Location: ../page/inscri.php?error=".urlencode("❌ Ce nom d'utilisateur est déjà pris"));
+        exit();
+    }
+
+    if ($emailExists) {
+        header("Location: ../page/inscri.php?error=".urlencode("❌ Cet email est déjà enregistré"));
+        exit();
+    }
+
+    if ($mdpExists) {
+        header("Location: ../page/inscri.php?error=".urlencode("❌ Ce mot de passe est déjà utilisé"));
+        exit();
+    }
+
+    // Générer OTP et expiration (2 minutes)
     $otp = rand(100000, 999999);
     $expire_at = date("Y-m-d H:i:s", strtotime("+2 minutes"));
 
     $stmt = $pdo->prepare("INSERT INTO utilisateur 
-        (nom, prenom, telephone, email, mdp, otp, expire_at, verified, created_at) 
-        VALUES (:nom, :prenom, :telephone, :email, :mdp, :otp, :expire_at, :verified, :created_at)");
+        (nom, prenom, telephone, email, mdp, otp, expire_at, verified, created_at, role) 
+        VALUES (:nom, :prenom, :telephone, :email, :mdp, :otp, :expire_at, :verified, :created_at, :role)");
 
     $stmt->execute([
         ':nom'       => $nom,
@@ -33,7 +83,8 @@ if (isset($_POST['register'])) {
         ':otp'       => $otp,
         ':expire_at' => $expire_at,
         ':verified'  => 0,
-        ':created_at'=> date("Y-m-d H:i:s")
+        ':created_at'=> date("Y-m-d H:i:s"),
+        ':role'      => $role
     ]);
 
     if ($stmt) {
@@ -55,11 +106,11 @@ if (isset($_POST['register'])) {
             $mail->addAddress($email, 'Utilisateur');
 
             $mail->isHTML(true);
-            $mail->Subject = 'Votre code OTP by Moukaila TOVO';
-            $mail->Body    = "Bonjour,<br><br>
+            $mail->Subject = 'bienvenue sur ShopESA';
+            $mail->Body    = "hello $prenom,<br><br>
                               Votre code de vérification est : <b>$otp</b><br>
-                              Il va expirer dans 2 minutes.<br><br>
-                              Cordialement,<br>L'équipe";
+                              Il va expirer dans 2 minutes. Cordialement,<br>L'équipe<br><br>
+                              merci!!!";
 
             $mail->send();
             header("Location: ../page/correct.php?email=$email");

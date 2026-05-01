@@ -51,7 +51,7 @@ $rows = getProduitPanierRows($pdo);
                         <td><?php echo (int) $row['produit_id']; ?></td>
                         <td><?php echo htmlspecialchars($row['produit_nom'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo (int) $row['quantite']; ?></td>
-                        <td><?php echo number_format($row['produit_prix'], 2, ',', ' '); ?> €</td>
+                        <td><?php echo number_format($row['produit_prix'], 2, ',', ' '); ?> FCFA</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

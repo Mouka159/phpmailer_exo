@@ -21,7 +21,7 @@ try {
     <title>Catalogue Produits</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
-        header { background: #1a4d80; color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
         header a { color: #fff; text-decoration: none; margin-left: 18px; }
         .container { max-width: 1080px; margin: 24px auto; padding: 0 16px; }
         .message { margin-bottom: 20px; padding: 14px 18px; background: #e7f7e2; border: 1px solid #b8dfb4; color: #225927; border-radius: 8px; }
@@ -32,8 +32,8 @@ try {
         .card p { margin: 10px 0; color: #555; line-height: 1.5; }
         .card strong { display: block; margin: 10px 0; font-size: 1rem; }
         .card form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
-        .card input[type="number"] { width: 70px; padding: 10px; border: 1px solid #d3d8de; border-radius: 6px; }
-        .card button { flex: 1; min-width: 120px; padding: 11px 14px; border: none; border-radius: 8px; background: #1a73e8; color: #fff; cursor: pointer; }
+        .card input[type="number"] { width: 70px; padding: 10px; border: 1px solid background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);; border-radius: 6px; }
+        .card button { flex: 1; min-width: 120px; padding: 11px 14px; border: none; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; cursor: pointer; }
         .card button:disabled { background: #8dabd6; cursor: not-allowed; }
     </style>
 </head>

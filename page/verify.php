@@ -155,8 +155,7 @@
     </form>
     
     <p class="info-text">⏱️ Le code expire dans 2 minutes</p>
-    
-    <a href="conexion.php">← Retour à la connexion</a>
+
 </div>
 </body>
 </html>

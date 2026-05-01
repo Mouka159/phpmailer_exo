@@ -106,7 +106,7 @@
         <div class="success-icon">
             <i class="fa-solid fa-check-circle"></i>
         </div>
-        <h2>✅ Inscription Réussie!</h2>
+        <h2> Inscription Réussie!</h2>
         <p class="message">
             Bienvenue! Vous êtes maintenant inscrit.<br>
             Un code de vérification a été envoyé à votre email.
@@ -117,7 +117,7 @@
         $email = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
         
         if ($error === 2) {
-            echo '<div class="error">❌ Erreur lors de l\'envoi du email. Veuillez réessayer.</div>';
+            echo '<div class="error"> Erreur lors de l\'envoi du email. Veuillez réessayer.</div>';
         }
         ?>
         
@@ -128,7 +128,7 @@
             <button type="submit" name="verify">Vérifier & Activer mon compte</button>
         </form>
         
-        <p class="info-text">⏱️ Le code expire dans 2 minutes</p>
+        <p class="info-text">⏱ Le code expire dans 2 minutes</p>
         
         <p style="margin-top: 20px; color: #666;">
             Vous avez un compte? 

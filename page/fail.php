@@ -101,13 +101,13 @@
             <i class="fas fa-exclamation-circle"></i>
         </div>
         
-        <h1>❌ Erreur d'Inscription</h1>
+        <h1> Erreur d'Inscription</h1>
         <p class="message">
             Nous avons rencontré un problème lors de la création de votre compte.
         </p>
         
         <div class="error-details">
-            <strong>⚠️ Raison possible:</strong>
+            <strong> Raison possible:</strong>
             <?php
             $error = isset($_GET['error']) ? (int)$_GET['error'] : 0;
             switch($error) {
@@ -124,7 +124,7 @@
         </div>
         
         <div class="button-group">
-            <a href="inscri.php" class="btn-primary">🔄 Recommencer l'Inscription</a>
+            <a href="inscri.php" class="btn-primary"> Recommencer l'Inscription</a>
         </div>
 
         <p class="help-text">

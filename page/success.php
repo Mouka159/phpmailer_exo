@@ -97,22 +97,40 @@
         <div class="success-icon">
             <i class="fas fa-check-circle"></i>
         </div>
-        
-        <h1>🎉 Bienvenue!</h1>
-        <p class="message">
-            Votre compte a été activé avec succès.<br>
-            Vous pouvez maintenant accéder à votre compte et commencer vos achats.
-        </p>
-        
-        <div class="info-box">
-            <strong>✓ Compte vérifié</strong><br>
-            Votre email a été confirmé et votre profil est actif.
-        </div>
-        
-        <div class="button-group">
-            <a href="affiche.php" class="btn-primary">🛍️ Voir les Produits</a>
-            <a href="conexion.php" class="btn-secondary">🔐 Se Connecter</a>
-        </div>
+
+        <?php if ($type === 'order'): ?>
+            <h1>Commande Réussie !</h1>
+            <p class="message">
+                <?php echo htmlspecialchars($message ?: 'Votre commande a été enregistrée avec succès.'); ?><br>
+                Vous recevrez un email de confirmation dans les plus brefs délais.
+            </p>
+
+            <div class="info-box">
+                <strong>📦 Statut de votre commande</strong><br>
+                Votre commande est en cours de traitement. Vous serez informé de son évolution.
+            </div>
+
+            <div class="button-group">
+                <a href="compte.php" class="btn-primary">Voir mes commandes</a>
+                <a href="affiche.php" class="btn-secondary">Continuer mes achats</a>
+            </div>
+        <?php else: ?>
+            <h1>Bienvenue !</h1>
+            <p class="message">
+                <?php echo htmlspecialchars($message ?: 'Votre compte a été activé avec succès.'); ?><br>
+                Vous pouvez maintenant accéder à votre compte et commencer vos achats.
+            </p>
+
+            <div class="info-box">
+                <strong>✓ Compte vérifié</strong><br>
+                Votre email a été confirmé et votre profil est actif.
+            </div>
+
+            <div class="button-group">
+                <a href="affiche.php" class="btn-primary">Voir les Produits</a>
+                <a href="conexion.php" class="btn-secondary">Se Connecter</a>
+            </div>
+        <?php endif; ?>
     </div>
 </body>
 </html>
