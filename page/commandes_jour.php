@@ -1,6 +1,12 @@
 <?php
 session_start();
 include('../config/db.php'); // Connexion PDO
+require '../PHPMailer-master/src/Exception.php';
+require '../PHPMailer-master/src/PHPMailer.php';
+require '../PHPMailer-master/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 // Vérifier si l'utilisateur est connecté et est admin
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? 'user') !== 'admin') {
@@ -9,6 +15,61 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? 'user') !== 'admin') {
 }
 
 $message = '';
+if (isset($_POST['mark_delivered'])) {
+    $orderId = (int) ($_POST['order_id'] ?? 0);
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmtOrder = $pdo->prepare("SELECT c.id_commande, c.utilisateur_id, c.montant_total, c.adresse_livraison, c.telephone, c.statut, u.nom, u.prenom, u.email
+            FROM Commandes c
+            JOIN utilisateur u ON c.utilisateur_id = u.id
+            WHERE c.id_commande = ?");
+        $stmtOrder->execute([$orderId]);
+        $commande = $stmtOrder->fetch();
+
+        if (!$commande) {
+            throw new Exception('Commande introuvable.');
+        }
+
+        if ($commande['statut'] === 'Livrée') {
+            throw new Exception('Cette commande est déjà marquée comme livrée.');
+        }
+
+        $update = $pdo->prepare("UPDATE Commandes SET statut = 'Livrée' WHERE id_commande = ?");
+        $update->execute([$orderId]);
+
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'moukailatovo9@gmail.com';
+        $mail->Password   = 'rwbhzklhqnjbxixw';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = 465;
+
+        $mail->setFrom('moukailatovo9@gmail.com', 'ShopESA');
+        $mail->addAddress($commande['email'], $commande['prenom'] . ' ' . $commande['nom']);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Confirmation de livraison de votre commande #' . $commande['id_commande'];
+        $mail->Body    = "Bonjour " . htmlspecialchars($commande['prenom']) . ",<br><br>Votre commande <strong>#" . $commande['id_commande'] . "</strong> a été livrée.<br><br>Merci d'avoir choisi ShopESA.<br><br>Cordialement,<br>L'équipe ShopESA";
+
+        $mail->send();
+
+        $pdo->commit();
+        $message = 'Commande #' . $orderId . ' marquée livrée et email envoyé au client.';
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        $message = 'Erreur lors de la livraison : ' . $e->getMessage();
+    }
+    header('Location: commandes_jour.php?message=' . urlencode($message));
+    exit();
+}
+
+if (isset($_GET['message'])) {
+    $message = $_GET['message'];
+}
 
 // Récupérer les commandes du jour
 try {
@@ -119,9 +180,58 @@ $totalMontant = array_sum(array_column($commandes, 'montant_total'));
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; text-decoration: none; transition: all .2s; }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-secondary { background: #e5e7eb; color: var(--text); }
+
+        /* RESPONSIVE */
+        .hamburger {
+          display: none;
+          position: fixed;
+          top: 20px;
+          left: 20px;
+          z-index: 1001;
+          flex-direction: column;
+          cursor: pointer;
+          padding: 10px;
+          background: rgba(0,0,0,0.5);
+          border-radius: 5px;
+        }
+        .hamburger span {
+          width: 25px;
+          height: 3px;
+          background: white;
+          margin: 3px 0;
+          transition: 0.3s;
+        }
+        @media (max-width: 768px) {
+          .layout {
+            grid-template-columns: 1fr;
+          }
+          .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            z-index: 1000;
+            transition: left 0.3s;
+          }
+          .sidebar.show {
+            left: 0;
+          }
+          .hamburger {
+            display: flex;
+          }
+          .main {
+            padding: 20px;
+          }
+        }
     </style>
 </head>
 <body>
+    <div class="hamburger" onclick="toggleSidebar()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <div class="layout">
         <aside class="sidebar">
             <div class="brand">Admin Dashboard</div>
@@ -208,11 +318,26 @@ $totalMontant = array_sum(array_column($commandes, 'montant_total'));
                                     </div>
                                 <?php endforeach; ?>
                             </div>
+
+                            <?php if ($commande['statut'] !== 'Livrée'): ?>
+                                <form method="post" style="margin-top: 16px;">
+                                    <input type="hidden" name="order_id" value="<?php echo $commande['id_commande']; ?>">
+                                    <button type="submit" name="mark_delivered" class="btn btn-primary">Marquer comme livrée</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </main>
     </div>
+
+    <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('show');
+    }
+    </script>
+
 </body>
 </html>

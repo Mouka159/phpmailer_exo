@@ -768,9 +768,58 @@ $produits = $pdo->query($sql)->fetchAll();
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(102, 126, 234, 0.6);
     }
+
+    /* RESPONSIVE */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 10px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 5px;
+    }
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: white;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s;
+      }
+      .sidebar.show {
+        left: 0;
+      }
+      .hamburger {
+        display: flex;
+      }
+      .main {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
   <div class="layout">
     <aside class="sidebar">
       <div class="brand">Admin Store</div>
@@ -942,5 +991,13 @@ $produits = $pdo->query($sql)->fetchAll();
       </div>
     </main>
   </div>
+
+  <script>
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('show');
+  }
+  </script>
+
 </body>
 </html>

@@ -20,11 +20,47 @@
     }
     header h1 { margin: 0; font-size: 1.8em;
    }
-    nav a {
-      color: white; text-decoration: none;
-      margin: 0 15px; font-weight: 600;
-    }
     nav a:hover { color:white; }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 10px;
+    }
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: white;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+    nav {
+      display: flex;
+    }
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      nav {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      nav.show {
+        display: flex;
+      }
+      nav a {
+        margin: 10px 0;
+        padding: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+      }
+    }
     #hero {
       color: white; text-align: center;
       padding: 100px 20px;
@@ -94,7 +130,12 @@
 <header>
   <h1>ShopESA</h1>
   <span>Facile et Rapide!</span>
-  <nav>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <nav id="nav-menu">
     <a href="acceuil.php"><i class="fas fa-home"></i> Accueil</a>
     <a href="affiche.php"><i class="fas fa-box"></i> Produits</a>
     <a href="conexion.php"><i class="fas fa-user"></i> Connexion</a>
@@ -120,6 +161,13 @@
   <p>&copy   2026 ShopTogo | Livraison rapide | Paiement sécurisé</p>
   <p>by Moukaila & Gloria</p>
 </footer>
+
+<script>
+function toggleMenu() {
+  const nav = document.getElementById('nav-menu');
+  nav.classList.toggle('show');
+}
+</script>
 
 </body>
 </html>

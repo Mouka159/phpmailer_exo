@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ");
                 $stmtProduit->execute([
                     $commande_id,
-                    $item['id_produit'],
+                    $item['produit_id'],
                     $item['quantite'],
                     $item['prix'],
                     $item['total']
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Vider le panier après la commande
-            clearCart($pdo, $_SESSION['user_id']);
+            clearUserCart($pdo, $_SESSION['user_id']);
 
             // Valider la transaction
             $pdo->commit();
@@ -88,39 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (!empty($message)) {
     header('Location: commande.php?message=' . urlencode($message));
     exit();
-}
-?>
-                $adresse_livraison,
-                $telephone,
-                $notes
-            ]);
-
-            $commande_id = $pdo->lastInsertId();
-
-            // Insérer les produits de la commande
-            $stmt_produit = $pdo->prepare("
-                INSERT INTO Commande_Produits (commande_id, produit_id, quantite, prix_unitaire, prix_total)
-                VALUES (?, ?, ?, ?, ?)
-            ");
-            $stmt_produit->execute([
-                $commande_id,
-                1, // ID du produit (à adapter selon votre logique)
-                $quantite,
-                $prix_unitaire,
-                $montant_total
-            ]);
-
-            // Valider la transaction
-            $pdo->commit();
-
-            $message = "Votre commande a été passée avec succès ! ID de commande : " . $commande_id;
-
-        } catch (PDOException $e) {
-            // Annuler la transaction en cas d'erreur
-            $pdo->rollBack();
-            $message = "Erreur lors de la création de la commande : " . $e->getMessage();
-        }
-    }
 }
 ?>
 

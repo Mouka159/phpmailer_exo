@@ -12,7 +12,7 @@ if(isset($_POST['login'])){
     // Vérifier si l'email existe dans la base de données
     $smt = $pdo->prepare("SELECT * FROM utilisateur WHERE email = :email");
     $smt->execute([':email' => $email]);
-    
+
     if($smt->rowCount() > 0){
         $user = $smt->fetch();
         

@@ -15,21 +15,20 @@ $userId = $_SESSION['user_id'];
 
 // Récupérer les informations de l'utilisateur
 function getUserInfo($pdo, $userId) {
-    $stmt = $pdo->prepare("SELECT id, nom, prenom, email, telephone, adresse FROM utilisateur WHERE id = :id");
+    $stmt = $pdo->prepare("SELECT id, nom, prenom, email, telephone FROM utilisateur WHERE id = :id");
     $stmt->execute([':id' => $userId]);
     return $stmt->fetch();
 }
 
 // Mettre à jour les informations personnelles
-function updateUserInfo($pdo, $userId, $nom, $prenom, $email, $telephone, $adresse) {
+function updateUserInfo($pdo, $userId, $nom, $prenom, $email, $telephone) {
     try {
-        $stmt = $pdo->prepare("UPDATE utilisateur SET nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, adresse = :adresse WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE utilisateur SET nom = :nom, prenom = :prenom, email = :email, telephone = :telephone WHERE id = :id");
         $stmt->execute([
             ':nom' => $nom,
             ':prenom' => $prenom,
             ':email' => $email,
             ':telephone' => $telephone,
-            ':adresse' => $adresse,
             ':id' => $userId
         ]);
         $_SESSION['nom'] = $nom;
@@ -81,55 +80,6 @@ function changePassword($pdo, $userId, $oldPassword, $newPassword, $confirmPassw
     }
 }
 
-// Récupérer l'historique des commandes
-function getOrderHistory($pdo, $userId) {
-    try {
-        $stmt = $pdo->prepare("
-            SELECT id_commande, date_commande, montant_total, statut 
-            FROM Commandes 
-            WHERE utilisateur_id = :user_id 
-            ORDER BY date_commande DESC
-        ");
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetchAll();
-    } catch (PDOException $e) {
-        return [];
-    }
-}
-
-// Récupérer les détails d'une commande
-function getOrderDetails($pdo, $orderId) {
-    try {
-        $stmt = $pdo->prepare("
-            SELECT cp.*, p.nom_produit, p.prix 
-            FROM Commande_Produits cp
-            JOIN Produits p ON cp.produit_id = p.id_produit
-            WHERE cp.commande_id = :order_id
-        ");
-        $stmt->execute([':order_id' => $orderId]);
-        return $stmt->fetchAll();
-    } catch (PDOException $e) {
-        return [];
-    }
-}
-
-// Récupérer les commandes en cours
-function getActiveOrders($pdo, $userId) {
-    try {
-        $stmt = $pdo->prepare("
-            SELECT id_commande, date_commande, montant_total, statut 
-            FROM Commandes 
-            WHERE utilisateur_id = :user_id 
-            AND statut IN ('En attente', 'Expédiée')
-            ORDER BY date_commande DESC
-        ");
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetchAll();
-    } catch (PDOException $e) {
-        return [];
-    }
-}
-
 // Traiter les actions POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
@@ -138,9 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $prenom = trim($_POST['prenom'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $telephone = trim($_POST['telephone'] ?? '');
-            $adresse = trim($_POST['adresse'] ?? '');
 
-            if (updateUserInfo($pdo, $userId, $nom, $prenom, $email, $telephone, $adresse)) {
+            if (updateUserInfo($pdo, $userId, $nom, $prenom, $email, $telephone)) {
                 $updateMessage = 'Informations mises à jour avec succès';
             } else {
                 $updateError = 'Erreur lors de la mise à jour des informations';
@@ -158,6 +107,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+}
+
+// Récupérer les commandes actives (non livrées)
+function getActiveOrders(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare("SELECT id_commande, date_commande, montant_total, statut FROM Commandes WHERE utilisateur_id = :user_id AND statut != 'Livrée' ORDER BY date_commande DESC");
+    $stmt->execute([':user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+
+// Récupérer l'historique des commandes (uniquement livrées)
+function getOrderHistory(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare("SELECT id_commande, date_commande, montant_total, statut FROM Commandes WHERE utilisateur_id = :user_id AND statut = 'Livrée' ORDER BY date_commande DESC");
+    $stmt->execute([':user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+
+// Récupérer les détails d'une commande
+function getOrderDetails(PDO $pdo, int $orderId): array
+{
+    $stmt = $pdo->prepare("
+        SELECT p.nom AS nom_produit, cp.quantite, cp.prix_unitaire AS prix
+        FROM Commande_Produits cp
+        JOIN Produits p ON cp.produit_id = p.id_produit
+        WHERE cp.commande_id = :order_id
+    ");
+    $stmt->execute([':order_id' => $orderId]);
+    return $stmt->fetchAll();
 }
 
 // Récupérer les informations actuelles

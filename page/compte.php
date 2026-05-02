@@ -1,3 +1,4 @@
+<?php require_once '../logique/compte.php'; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -392,13 +393,29 @@
             .orders-container {
                 grid-template-columns: 1fr;
             }
+
+            .sidebar-toggle {
+                display: block;
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-bottom: 20px;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .sidebar.show {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <?php 
-    require_once '../logique/compte.php'; 
-    ?>
 
     <header>
         <h1><i class="fas fa-shopping-bag"></i> ShopTogo</h1>
@@ -414,18 +431,19 @@
         <h1 class="page-title">Mon Compte</h1>
 
         <div class="dashboard">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰ Menu</button>
             <div class="sidebar">
                 <h3>Navigation</h3>
-                <a href="#" onclick="showSection('info')" class="nav-link active">
+                <a href="#info" onclick="showSection('info')" class="nav-link active">
                     <i class="fas fa-user"></i> Mes Informations
                 </a>
-                <a href="#" onclick="showSection('password')" class="nav-link">
+                <a href="#password" onclick="showSection('password')" class="nav-link">
                     <i class="fas fa-lock"></i> Changer le mot de passe
                 </a>
-                <a href="#" onclick="showSection('active-orders')" class="nav-link">
+                <a href="#active-orders" onclick="showSection('active-orders')" class="nav-link">
                     <i class="fas fa-truck"></i> Commandes en cours
                 </a>
-                <a href="#" onclick="showSection('history')" class="nav-link">
+                <a href="#history" onclick="showSection('history')" class="nav-link">
                     <i class="fas fa-history"></i> Historique
                 </a>
                 <a href="logique/deconnexion.php" class="nav-link logout-btn">
@@ -469,10 +487,6 @@
                                     <label>Téléphone</label>
                                     <p><?php echo htmlspecialchars($userInfo['telephone'] ?? 'Non renseigné'); ?></p>
                                 </div>
-                                <div class="info-box">
-                                    <label>Adresse</label>
-                                    <p><?php echo htmlspecialchars($userInfo['adresse'] ?? 'Non renseignée'); ?></p>
-                                </div>
                             </div>
                         </div>
 
@@ -504,11 +518,6 @@
                                         <label for="telephone"><i class="fas fa-phone"></i> Téléphone</label>
                                         <input type="tel" id="telephone" name="telephone" value="<?php echo htmlspecialchars($userInfo['telephone'] ?? ''); ?>" required>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="adresse"><i class="fas fa-map-marker-alt"></i> Adresse</label>
-                                    <textarea id="adresse" name="adresse" placeholder="Entrez votre adresse complète"><?php echo htmlspecialchars($userInfo['adresse'] ?? ''); ?></textarea>
                                 </div>
 
                                 <button type="submit" class="btn-save">
@@ -733,6 +742,11 @@
                 this.classList.add('active');
             });
         });
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show');
+        }
     </script>
 </body>
 </html>

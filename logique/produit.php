@@ -68,7 +68,7 @@ function getCartTotal(PDO $pdo): float
     return (float) $row['total_price'];
 }
 
-function clearCart(PDO $pdo, int $userId): bool
+function clearUserCart(PDO $pdo, int $userId): bool
 {
     try {
         // Récupérer l'ID du panier de l'utilisateur

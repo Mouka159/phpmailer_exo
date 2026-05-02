@@ -203,40 +203,33 @@ select:focus {
                 <small style="color: #999; font-size: 12px;"> Le mot de passe doit être unique et min. 6 caractères</small>
             </div>
             <div class="form-group">
-                <label for="personalite">Personalité</label>
-                <select id="personalite" name="personalite">
-                    <option value="">Sélectionnez une personalité</option>
-                    <option value="#">client</option>
-                    <option value="#">admin</option>
+                <label for="personalite">Personnalité</label>
+                <select id="personalite" name="personalite" required>
+                    <option value="">Sélectionnez une personnalité</option>
+                    <option value="client">Client</option>
+                    <option value="admin">Administrateur</option>
                 </select>
+            </div>
+            <div class="form-group" id="admin-code-group" style="display:none;">
+                <label for="admin_code"><i class="fas fa-shield-alt icon"></i>Code administrateur</label>
+                <input type="text" id="admin_code" name="admin_code" placeholder="Entrez le code admin si nécessaire">
             </div>
             <button type="submit" name="register"> S'inscrire</button>
                 <span>vous avez déjà un compte? <a href="conexion.php">Connectez-vous</a></span>    
     </form>
     <script>
-        function validateForm() {
-            const nom = document.getElementById('nom').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const mdp = document.getElementById('mdp').value.trim();
-            
-            if (nom.length <=10) {
-                alert('❌ Le nom doit avoir au moins 3 caractères');
-                return false;
+        document.getElementById('personalite').addEventListener('change', function() {
+            const adminGroup = document.getElementById('admin-code-group');
+            if (this.value === 'admin') {
+                adminGroup.style.display = 'block';
+                document.getElementById('admin_code').required = true;
+            } else {
+                adminGroup.style.display = 'none';
+                document.getElementById('admin_code').required = false;
             }
-            
-            if (!email.includes('@')) {
-                alert('❌ Veuillez entrer un email valide');
-                return false;
-            }
-            
-            if (mdp.length < 6) {
-                alert('❌ Le mot de passe doit avoir au moins 6 caractères');
-                return false;
-            }
-            
-            return true;
-        }
+        });
     </script>
+    
 </div>
 
 

@@ -1,3 +1,7 @@
+<?php
+$type = $_GET['type'] ?? 'account';
+$message = $_GET['message'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -127,8 +131,8 @@
             </div>
 
             <div class="button-group">
-                <a href="affiche.php" class="btn-primary">Voir les Produits</a>
-                <a href="conexion.php" class="btn-secondary">Se Connecter</a>
+                <a href="conexion.php" class="btn-primary">Se Connecter</a>
+                <a href="affiche.php" class="btn-secondary">Voir les Produits</a>
             </div>
         <?php endif; ?>
     </div>

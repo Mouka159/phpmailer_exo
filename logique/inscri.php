@@ -10,17 +10,18 @@ require '../PHPMailer-master/src/PHPMailer.php';
 require '../PHPMailer-master/src/SMTP.php';
 
 if (isset($_POST['register'])) {
-    $nom       = trim($_POST['nom']);
-    $prenom    = trim($_POST['prenom']);
-    $telephone = trim($_POST['numero']);
-    $email     = trim($_POST['email']);
-    $mdp_plain = trim($_POST['mdp']); // Garder le mot de passe non hashé pour vérification
-    $adminCode = trim($_POST['admin_code'] ?? '');
-    $password  = password_hash($mdp_plain, PASSWORD_BCRYPT);
+    $nom          = trim($_POST['nom']);
+    $prenom       = trim($_POST['prenom']);
+    $telephone    = trim($_POST['numero']);
+    $email        = trim($_POST['email']);
+    $mdp_plain    = trim($_POST['mdp']); // Garder le mot de passe non hashé pour vérification
+    $personalite  = trim($_POST['personalite'] ?? 'client');
+    $adminCode    = trim($_POST['admin_code'] ?? '');
+    $password     = password_hash($mdp_plain, PASSWORD_BCRYPT);
     
     // Déterminer le rôle
     $role = 'user';
-    if ($adminCode !== '') {
+    if ($personalite === 'admin') {
         if ($adminCode === 'ADMIN2026') {
             $role = 'admin';
         } else {
@@ -113,7 +114,11 @@ if (isset($_POST['register'])) {
                               merci!!!";
 
             $mail->send();
-            header("Location: ../page/correct.php?email=$email");
+            if ($role === 'admin') {
+                header("Location: ../page/conexion.php?email=" . urlencode($email));
+            } else {
+                header("Location: ../page/correct.php?email=" . urlencode($email));
+            }
             exit();
         } catch (Exception $e) {
             header("Location: ../page/correct.php?error=2"); // Erreur envoi mail

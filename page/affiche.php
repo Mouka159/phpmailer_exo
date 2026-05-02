@@ -3,14 +3,48 @@ session_start();
 include('../config/db.php'); // Connexion PDO
 
 $message = trim((string) ($_GET['msg'] ?? ''));
-
+$categorie = trim((string) ($_GET['categorie'] ?? 'all'));
 
 try {
-    // Récupération des produits
-    $stmt = $pdo->query('SELECT id_produit, nom, description, prix, stock, image_url 
-                         FROM Produits 
-                         ORDER BY id_produit DESC');
+    // Vérifier si la table categories existe et si la colonne id_categorie existe dans Produits
+    $hasCategories = false;
+    $tableCheck = $pdo->query("SHOW TABLES LIKE 'categories'");
+    if ($tableCheck->fetchColumn()) {
+        $columnCheck = $pdo->query("SHOW COLUMNS FROM Produits LIKE 'id_categorie'");
+        if ($columnCheck->fetchColumn()) {
+            $hasCategories = true;
+        }
+    }
+
+    // Récupération des produits avec filtrage par catégorie si applicable
+    $sql = 'SELECT id_produit, nom, description, prix, stock, image_url' . ($hasCategories ? ', id_categorie' : '') . ' FROM Produits';
+    $params = [];
+
+    if ($hasCategories && $categorie !== 'all') {
+        // Pour les catégories dynamiques, rechercher par nom de catégorie
+        $categoryStmt = $pdo->prepare('SELECT id_categorie FROM categories WHERE nom = ? LIMIT 1');
+        $categoryStmt->execute([$categorie]);
+        $categoryData = $categoryStmt->fetch();
+
+        if ($categoryData) {
+            $sql .= ' WHERE id_categorie = ?';
+            $params[] = $categoryData['id_categorie'];
+        } else {
+            // Si la catégorie n'existe pas, ne filtrer rien (afficher tous)
+            $categorie = 'all';
+        }
+    }
+
+    $sql .= ' ORDER BY id_produit DESC';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
     $produits = $stmt->fetchAll();
+
+    // Récupération des catégories pour l'affichage dynamique si disponible
+    $categoriesList = [];
+    if ($hasCategories) {
+        $categoriesList = $pdo->query('SELECT id_categorie, nom FROM categories ORDER BY nom')->fetchAll();
+    }
 } catch (PDOException $e) {
     die('Erreur de requête : ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
 }
@@ -41,29 +75,97 @@ try {
         a{ color: #fff; text-decoration: none; margin-left: 18px; }
         a:hover { text-decoration: underline; }
         input[type="search"] { padding: 8px 12px; border: none; border-radius: 6px; }
+        .hamburger {
+          display: none;
+          flex-direction: column;
+          cursor: pointer;
+          padding: 10px;
+        }
+        .hamburger span {
+          width: 25px;
+          height: 3px;
+          background: white;
+          margin: 3px 0;
+          transition: 0.3s;
+        }
+        .nav-container {
+          display: flex;
+          align-items: center;
+        }
+        @media (max-width: 768px) {
+          .hamburger {
+            display: flex;
+          }
+          .nav-container {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          }
+          .nav-container.show {
+            display: flex;
+          }
+          .nav-container a,
+          .nav-container input,
+          .nav-container nav {
+            width: 100%;
+          }
+          .nav-container nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+          .nav-container a {
+            margin: 10px 0;
+          }
+          nav a {
+            margin: 0;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+          }
+        }
             .categorie { background: #fff; padding: 12px 16px; display: flex; gap: 18px; justify-content: center; margin-bottom: 24px; }
             .categorie a { color: #20335c; font-weight: bold; }
-            .categorie a:hover { text-decoration: underline; }
+            .categorie a:hover, .categorie a.active { text-decoration: underline; color: #667eea; }
     </style>
 </head>
 <body>
     <header>
   <h1>ShopESA</h1>
-  <nav>
-    <a href="acceuil.php"><i class="fas fa-home"></i> Accueil</a>
-    <a href="affiche.php"><i class="fas fa-box"></i> Produits</a>
-    <a href="conexion.php"><i class="fas fa-user"></i> Connexion</a>
-  </nav>
-
-  <input type="search" placeholder="Rechercher un produit...">
-  <a href="compte.php"><i class="fas fa-user"></i> Mon compte</a>
-  <a href="panier.php"><i class="fas fa-shopping-cart"></i> Panier </a>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="nav-container" id="nav-menu">
+    <nav>
+      <a href="acceuil.php"><i class="fas fa-home"></i> Accueil</a>
+      <a href="affiche.php"><i class="fas fa-box"></i> Produits</a>
+      <a href="conexion.php"><i class="fas fa-user"></i> Connexion</a>
+    </nav>
+    <a href="compte.php"><i class="fas fa-user"></i> Mon compte</a>
+    <a href="panier.php"><i class="fas fa-shopping-cart"></i> Panier </a>
+  </div>
 </header>
 <div class="categorie">
-    <a href="affiche.php?categorie=all">Tous les produits</a>
-    <a href="affiche.php?categorie=electronics"><i class="fas fa-laptop"></i> Électronique</a>
-    <a href="affiche.php?categorie=clothing"><i class="fas fa-tshirt"></i> Mode</a>
-    <a href="affiche.php?categorie=home"><i class="fas fa-home"></i> Maison</a>
+    <a href="affiche.php?categorie=all" class="<?php echo $categorie === 'all' ? 'active' : ''; ?>">Tous les produits</a>
+    <?php if ($hasCategories && !empty($categoriesList)): ?>
+        <?php foreach ($categoriesList as $cat): ?>
+            <a href="affiche.php?categorie=<?php echo htmlspecialchars($cat['nom'], ENT_QUOTES, 'UTF-8'); ?>" class="<?php echo $categorie === $cat['nom'] ? 'active' : ''; ?>">
+                <i class="fas fa-tag"></i> <?php echo htmlspecialchars($cat['nom'], ENT_QUOTES, 'UTF-8'); ?>
+            </a>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <!-- Catégories hardcodées si la table categories n'existe pas -->
+        <a href="affiche.php?categorie=Électronique" class="<?php echo $categorie === 'Électronique' ? 'active' : ''; ?>"><i class="fas fa-laptop"></i> Électronique</a>
+        <a href="affiche.php?categorie=Mode" class="<?php echo $categorie === 'Mode' ? 'active' : ''; ?>"><i class="fas fa-tshirt"></i> Mode</a>
+        <a href="affiche.php?categorie=Maison" class="<?php echo $categorie === 'Maison' ? 'active' : ''; ?>"><i class="fas fa-home"></i> Maison</a>
+    <?php endif; ?>
 </div>
 
 <div class="container">
@@ -101,5 +203,13 @@ try {
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+function toggleMenu() {
+  const nav = document.getElementById('nav-menu');
+  nav.classList.toggle('show');
+}
+</script>
+
 </body>
 </html>

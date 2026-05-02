@@ -16,9 +16,9 @@ $cartTotal = getCartTotal($pdo);
 
 // Récupérer les informations utilisateur
 $userId = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT nom, prenom, email, telephone, adresse FROM utilisateur WHERE id = :id");
+$stmt = $pdo->prepare("SELECT nom, prenom, email, telephone FROM utilisateur WHERE id = :id");
 $stmt->execute([':id' => $userId]);
-$userInfo = $stmt->fetch();
+$userInfo = $stmt->fetch() ?: [];
 
 // Rediriger si panier vide
 if (empty($cartItems)) {
