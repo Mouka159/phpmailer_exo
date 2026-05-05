@@ -84,4 +84,49 @@ function clearUserCart(PDO $pdo, int $userId): bool
     }
 }
 
+// ===== ADMIN FUNCTIONS =====
+function addProduct(PDO $pdo, array $data): bool {
+    try {
+        $stmt = $pdo->prepare('INSERT INTO produits (nom, description, prix, stock, image_url) VALUES (?, ?, ?, ?, ?)');
+        return $stmt->execute([
+            $data['nom'],
+            $data['description'] ?? '',
+            $data['prix'],
+            $data['stock'],
+            $data['image_url'] ?? ''
+        ]);
+    } catch (PDOException $e) {
+        error_log('Add product error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function updateProduct(PDO $pdo, int $id, array $data): bool {
+    try {
+        $stmt = $pdo->prepare('UPDATE produits SET nom=?, description=?, prix=?, stock=?, image_url=? WHERE id_produit=?');
+        return $stmt->execute([
+            $data['nom'],
+            $data['description'] ?? '',
+            $data['prix'],
+            $data['stock'],
+            $data['image_url'] ?? '',
+            $id
+        ]);
+    } catch (PDOException $e) {
+        error_log('Update product error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function deleteProduct(PDO $pdo, int $id): bool {
+    try {
+        $stmt = $pdo->prepare('DELETE FROM produits WHERE id_produit=?');
+        return $stmt->execute([$id]);
+    } catch (PDOException $e) {
+        error_log('Delete product error: ' . $e->getMessage());
+        return false;
+    }
+}
+
 ?>
+

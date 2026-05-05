@@ -1,4 +1,4 @@
-<?php
+ <?php
 session_start();
 include('../config/db.php'); // Connexion PDO
 
@@ -391,10 +391,16 @@ $produits = $pdo->query($sql)->fetchAll();
 
     /* GRID LAYOUT */
     .grid-2 { 
-      display: grid; 
-      grid-template-columns: 1fr 380px; 
+      display: flex; 
+      height: calc(100vh - 200px);
       gap: 30px; 
-      align-items: start;
+    }
+
+    .grid-2 > .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
     /* CARDS */
@@ -826,25 +832,20 @@ $produits = $pdo->query($sql)->fetchAll();
       <nav>
         <ul class="nav-list">
           <li class="nav-item"><a class="nav-link active" href="admis.php"><i class="fas fa-cube"></i> <span>Produits</span></a></li>
-          <li class="nav-item"><a class="nav-link" href="commandes_jour.php"><i class="fas fa-receipt"></i> <span>Commandes</span></a></li>
+<li class="nav-item"><a class="nav-link" href="produits_disponibles.php"><i class="fas fa-box-open"></i> <span>📦 Produit disponible</span></a>
+          <li class="nav-item"><a class="nav-link" href="commandes_jour.php"><i class="fas fa-receipt"></i> <span>Commandes</span></a>
           <li class="nav-item"><a class="nav-link" href="affiche.php"><i class="fas fa-store"></i> <span>Catalogue</span></a></li>
           <li class="nav-item"><a class="nav-link" href="panier.php"><i class="fas fa-shopping-cart"></i> <span>Panier</span></a></li>
           <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog"></i> <span>Paramètres</span></a></li>
         </ul>
       </nav>
-      <div class="menu-section">
-        <p class="menu-title">⭐ Produits populaires</p>
-        <ul class="product-menu">
-          <?php if (empty($produits)): ?>
-            <li class="product-menu-item">Aucun produit</li>
-          <?php else: ?>
-            <?php foreach ($produits as $produit): ?>
-              <li><a class="product-menu-item" href="admis.php?edit=<?php echo (int)$produit['id_produit']; ?>"><?php echo htmlspecialchars($produit['nom'], ENT_QUOTES, 'UTF-8'); ?></a></li>
-            <?php endforeach; ?>
-          <?php endif; ?>
-        </ul>
+      <div class="nav-item">
+        <a class="nav-link" href="../logique/deconnexion.php">
+          <i class="fas fa-sign-out-alt"></i> 
+          <span>🚪 Déconnexion</span>
+        </a>
       </div>
-      <div class="sidebar-footer">✨ Gérez facilement votre inventaire de produits et catégories.</div>
+      <div class="sidebar-footer">✨ Admin Store</div>
     </aside>
 
     <main class="main">
@@ -954,13 +955,13 @@ $produits = $pdo->query($sql)->fetchAll();
           </form>
         </section>
 
-        <section class="card" id="existingProducts">
+        <section class="card" id="existingProducts" style="display: none;">
           <h2>🔥 Derniers produits</h2>
           <div class="grid-products">
             <?php if (empty($produits)): ?>
               <div class="no-products">
                 <h3>📭 Aucun produit</h3>
-                <p>Commencez par ajouter votre premier produit!</p>
+     tgv            <p>Commencez par ajouter votre premier produit!</p>
               </div>
             <?php else: ?>
               <?php foreach (array_slice($produits, 0, 8) as $produit): ?>
@@ -996,6 +997,20 @@ $produits = $pdo->query($sql)->fetchAll();
   function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     sidebar.classList.toggle('show');
+  }
+
+  function toggleProduits() {
+    const section = document.getElementById('existingProducts');
+    const btn = document.getElementById('toggleProduitsBtn');
+    if (section.style.display === 'none') {
+      section.style.display = 'block';
+      btn.innerHTML = '<i class="fas fa-eye-slash"></i> <span>Masquer produits</span>';
+      btn.classList.add('active');
+    } else {
+      section.style.display = 'none';
+      btn.innerHTML = '<i class="fas fa-box-open"></i> <span>📦 Produit disponible</span>';
+      btn.classList.remove('active');
+    }
   }
   </script>
 

@@ -144,7 +144,7 @@ try {
   </div>
   <div class="nav-container" id="nav-menu">
     <nav>
-      <a href="acceuil.php"><i class="fas fa-home"></i> Accueil</a>
+      <a href="index.php"><i class="fas fa-home"></i> Accueil</a>
       <a href="affiche.php"><i class="fas fa-box"></i> Produits</a>
       <a href="conexion.php"><i class="fas fa-user"></i> Connexion</a>
     </nav>
