@@ -29,7 +29,7 @@ if(isset($_POST['login'])){
                 header('Location: ../page/admin.php');
                 exit();
             } else {
-                header('Location: ../page/affiche.php');
+                header('Location: ../page/conexion.php');
                 exit();
             }
         } else {

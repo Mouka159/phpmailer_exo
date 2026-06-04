@@ -2,17 +2,7 @@
 session_start();
 require('../config/db.php');
 
-// Redirection si déjà connecté
-if (isset($_SESSION['user_id'])) {
-    // Rediriger selon le rôle
-    $role = $_SESSION['role'] ?? 'user';
-    if ($role === 'admin') {
-        header('Location: admin.php');
-    } else {
-        header('Location: affiche.php');
-    }
-    exit();
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">

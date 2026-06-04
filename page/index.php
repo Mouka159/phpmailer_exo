@@ -95,8 +95,9 @@ try {
       font-size: clamp(2.5rem, 5vw, 4rem);
       margin-bottom: 1.5rem;
       text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      color:#667eea ;
     }
-    .hero p { font-size: 1.3rem; margin-bottom: 2rem; max-width: 600px; }
+    .hero p { font-size: 1.3rem; margin-bottom: 2rem; max-width: 600px; color: #764ba2 ; }
     .btn-container {
       display: flex;
       gap: 1.5rem;

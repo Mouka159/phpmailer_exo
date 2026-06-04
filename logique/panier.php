@@ -87,6 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     switch ($_POST['action']) {
         case 'add':
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: ../page/conexion.php?msg=' . urlencode('Veuillez vous connecter pour ajouter au panier'));
+                exit();
+            }
             $productId = (int) ($_POST['produit_id'] ?? 0);
             $quantity = max(1, (int) ($_POST['quantite'] ?? 1));
             $message = addToCart($pdo, $productId, $quantity);

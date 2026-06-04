@@ -233,19 +233,19 @@ $totalMontant = array_sum(array_column($commandes, 'montant_total'));
       <span></span>
     </div>
     <div class="layout">
-        <aside class="sidebar">
+        <!--aside class="sidebar">
             <div class="brand">Admin Dashboard</div>
             <nav>
                 <ul class="nav-list">
                     <li class="nav-item"><a class="nav-link" href="admis.php"><span>📦 Produits</span></a></li>
                     <li class="nav-item"><a class="nav-link active" href="commandes_jour.php"><span>📋 Commandes du jour</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="affiche.php"><span>🛍️ Catalogue client</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="page/panier.php"><span>🛒 Panier</span></a></li>
+                    
                     <li class="nav-item"><a class="nav-link" href="#"><span>⚙️ Paramètres</span></a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">Consultez et gérez les commandes de la journée.</div>
-        </aside>
+        </aside-->
 
         <main class="main">
             <?php if ($message): ?>

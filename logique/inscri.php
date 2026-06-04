@@ -51,22 +51,12 @@ if (isset($_POST['register'])) {
         }
     }
 
-    // Vérifier les erreurs
-    if ($nomExists) {
-        header("Location: ../page/inscri.php?error=".urlencode("❌ Ce nom d'utilisateur est déjà pris"));
-        exit();
-    }
+    // Vérifier les erreurs d'unicité
 
     if ($emailExists) {
         header("Location: ../page/inscri.php?error=".urlencode("❌ Cet email est déjà enregistré"));
         exit();
-    }
-
-    if ($mdpExists) {
-        header("Location: ../page/inscri.php?error=".urlencode("❌ Ce mot de passe est déjà utilisé"));
-        exit();
-    }
-
+   }
     // Générer OTP et expiration (2 minutes)
     $otp = rand(100000, 999999);
     $expire_at = date("Y-m-d H:i:s", strtotime("+2 minutes"));

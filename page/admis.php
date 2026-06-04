@@ -832,20 +832,20 @@ $produits = $pdo->query($sql)->fetchAll();
       <nav>
         <ul class="nav-list">
           <li class="nav-item"><a class="nav-link active" href="admis.php"><i class="fas fa-cube"></i> <span>Produits</span></a></li>
-<li class="nav-item"><a class="nav-link" href="produits_disponibles.php"><i class="fas fa-box-open"></i> <span>📦 Produit disponible</span></a>
+<li class="nav-item"><a class="nav-link" href="produits_disponibles.php"><i class="fas fa-box-open"></i> <span> Produit disponible</span></a>
           <li class="nav-item"><a class="nav-link" href="commandes_jour.php"><i class="fas fa-receipt"></i> <span>Commandes</span></a>
           <li class="nav-item"><a class="nav-link" href="affiche.php"><i class="fas fa-store"></i> <span>Catalogue</span></a></li>
-          <li class="nav-item"><a class="nav-link" href="panier.php"><i class="fas fa-shopping-cart"></i> <span>Panier</span></a></li>
+          <li class="nav-item"><a class="nav-link" href="client_recent.php"><i class="fas fa-store"></i> <span>Client récent</span></a></li>
           <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog"></i> <span>Paramètres</span></a></li>
         </ul>
       </nav>
       <div class="nav-item">
         <a class="nav-link" href="../logique/deconnexion.php">
           <i class="fas fa-sign-out-alt"></i> 
-          <span>🚪 Déconnexion</span>
+          <span> Déconnexion</span>
         </a>
       </div>
-      <div class="sidebar-footer">✨ Admin Store</div>
+      <div class="sidebar-footer">&copy 2026  by Moukaila & Gloria</div>
     </aside>
 
     <main class="main">
@@ -992,6 +992,7 @@ $produits = $pdo->query($sql)->fetchAll();
       </div>
     </main>
   </div>
+  
 
   <script>
   function toggleSidebar() {

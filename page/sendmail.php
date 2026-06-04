@@ -41,21 +41,22 @@ function EnvoiMail($mail, $mailToSend, $otp) {
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'moukailatovo9@gmail.com';
-        $mail->Password   = 'rwbhzklhqnjbxixw'; // mot de passe d'application Gmail
+        $mail->Password   = 'rwbhzklhqnjbxixw';     //  ///lmpjidcpsffwtcke/// mot de passe d'application Gmail
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port       = 465;
 
         // Destinataires
-        $mail->setFrom('moukailatovo9@gmail.com', 'Moukaila TOVO');
+        $mail->setFrom('moukailatovo9@gmail.com', 'ShopESA');
         $mail->addAddress($mailToSend, 'Utilisateur');
 
         // Contenu
         $mail->isHTML(true);
         $mail->Subject = 'Votre code OTP';
-        $mail->Body    = "Bonjour,<br><br>
+        $mail->Body    = "Bonjour $prenom,<br><br>
                           Votre code de vérification est : <b>$otp</b><br>
-                          Il expire dans 20 secondes.<br><br>
-                          Cordiale,<br>L'équipe";
+                          Il expire dans 2 minute.<br><br>
+                          Cordiale,<br>L'équipe
+                           ---ShopESA---";
 
         $mail->send();
         return true;
